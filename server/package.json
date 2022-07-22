@@ -1,0 +1,15 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon -r esm server.js"
+  },
+  "dependencies": {
+    "@okta/jwt-verifier": "^2.6.0",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.18.1"
+  }
+}
