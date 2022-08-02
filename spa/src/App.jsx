@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import {
   SecureRoute,
   Security,
@@ -9,6 +10,9 @@ import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
 import { oktaConfig } from "./lib/oktaAuth";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+
+import Nav from "./Nav";
+
 export default function App() {
   const oktaAuth = new OktaAuth(oktaConfig);
   const navigate = useNavigate();
@@ -19,6 +23,7 @@ export default function App() {
 
   return (
     <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
+      <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path={CALLBACK_PATH} element={<LoginCallback />} />
@@ -26,6 +31,7 @@ export default function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="locked" element={<Locked />} />
         </Route>
+        <Route path="/login" element={<SignupLogin />} />
       </Routes>
     </Security>
   );
@@ -33,15 +39,25 @@ export default function App() {
 
 const Home = () => {
   const { authState, oktaAuth } = useOktaAuth();
-  const login = () => oktaAuth.signInWithRedirect({ originalUri: "/profile" });
+  // const login = () => oktaAuth.signInWithRedirect({ originalUri: "/profile" });
   if (!authState) return <>Loading Authentication...</>;
-  else if (!authState.isAuthenticated)
+  else if (!authState.isAuthenticated) {
     return (
       <div>
-        <button onClick={login}>Login</button>
+        Home Page
+        {/* <button onClick={login}>Login</button> */}
       </div>
     );
-  else return <div>You authenticated bitch!</div>;
+  } else {
+    return (
+      <div>
+        You authenticated bitch!{" "}
+        {/* <button onClick={() => oktaAuth?.signOut({ revokeAccessToken: false })}>
+          Logout
+        </button> */}
+      </div>
+    );
+  }
 };
 
 const Profile = () => {
@@ -119,7 +135,7 @@ const Profile = () => {
 
       <div>
         {" "}
-        <button onClick={(_) => oktaAuth.signOut({ revokeAccessToken: false })}>
+        <button onClick={() => oktaAuth.signOut({ revokeAccessToken: false })}>
           Logout
         </button>
       </div>
@@ -129,4 +145,14 @@ const Profile = () => {
 
 const Locked = () => {
   return <div>Locked</div>;
+};
+
+const SignupLogin = () => {
+  const { authState, oktaAuth } = useOktaAuth();
+  const login = () => oktaAuth.signInWithRedirect({ originalUri: "/profile" });
+  return (
+    <div>
+      <button onClick={login}>Okta Login</button>
+    </div>
+  );
 };
